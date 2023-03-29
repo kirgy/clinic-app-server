@@ -11,10 +11,17 @@ export const typeDefs = gql`
 
   type Patient {
     id: ID!
+    originId: ID!
     clinicId: ID!
     firstName: String!
     lastName: String!
     dateOfBirth: Date!
+  }
+
+  type Clinic {
+    id: ID!
+    originId: ID!
+    name: ID!
   }
 
   type Query {
@@ -22,6 +29,10 @@ export const typeDefs = gql`
   }
 
   type Query {
-    getPatient(id: ID!): Patient!
+    getPatient(id: ID!): Patient
+  }
+
+  type Query {
+    getClinic(id: ID!): Clinic
   }
 `;
