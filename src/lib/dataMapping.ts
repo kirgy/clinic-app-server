@@ -16,7 +16,7 @@ export type ClinicTypeSource = {
   name: string;
 };
 
-type PatientTypeGraph = {
+export type PatientTypeGraph = {
   id: string;
   originId: string;
   clinicId: string;
@@ -25,7 +25,7 @@ type PatientTypeGraph = {
   dateOfBirth: Date;
 };
 
-type ClinicTypeGraph = {
+export type ClinicTypeGraph = {
   id: string;
   originId: string;
   name: string;

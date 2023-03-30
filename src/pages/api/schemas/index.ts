@@ -3,12 +3,6 @@ import { gql } from "apollo-server-micro";
 export const typeDefs = gql`
   scalar Date
 
-  type User {
-    id: ID
-    login: String
-    avatar_url: String
-  }
-
   type Patient {
     id: ID!
     originId: ID!
@@ -16,16 +10,14 @@ export const typeDefs = gql`
     firstName: String!
     lastName: String!
     dateOfBirth: Date!
+    clinic: Clinic
   }
 
   type Clinic {
     id: ID!
     originId: ID!
     name: ID!
-  }
-
-  type Query {
-    getUser(name: String!): User!
+    patients: [Patient]!
   }
 
   type Query {

@@ -3,41 +3,52 @@ import { getCSVData } from "@/lib/getCSVData";
 import {
   DATA_MAPPING_TYPES,
   mapData,
+  PatientTypeGraph,
+  type ClinicTypeGraph,
   type ClinicTypeSource,
-  type PatientTypeSource,
 } from "@/lib/dataMapping";
+import { getPatientData } from "@/lib/patientData";
+import { getClinicData } from "@/lib/clinicData";
 
 export const resolvers = {
   Date: dateScalar,
-  Query: {
-    getUser: async () => {
-      return {
-        id: "1",
-        login: "kirgy",
-        avatar_url: "https://avatars.githubusercontent.com/u/3931356?v=4",
-      };
-    },
-    getPatient: async (_, args: { id: string }) => {
-      const patiantSource1 = await getCSVData<PatientTypeSource>(
-        "patients-1.csv"
-      );
-
-      const patiantSource2 = await getCSVData<PatientTypeSource>(
-        "patients-2.csv"
-      );
-      const allPatiantSources = [];
-      allPatiantSources.push(...patiantSource1.content);
-      allPatiantSources.push(...patiantSource2.content);
+  Clinic: {
+    patients: async (clinic: ClinicTypeGraph) => {
+      const clinicPatientData = await getPatientData(clinic.id);
 
       return mapData({
         type: DATA_MAPPING_TYPES.PATIENT,
-        source: allPatiantSources,
+        source: clinicPatientData,
+      });
+    },
+  },
+  Patient: {
+    clinic: async (patient: PatientTypeGraph) => {
+      const allClinicData = await getClinicData();
+      const formattedClinicData = mapData({
+        type: DATA_MAPPING_TYPES.CLINIC,
+        source: allClinicData,
+      });
+
+      const foundClinic = formattedClinicData.find((clinic) => {
+        return clinic.id === patient.clinicId;
+      });
+
+      return foundClinic;
+    },
+  },
+  Query: {
+    getPatient: async (_: never, args: { id: string }) => {
+      const allPatientData = await getPatientData();
+      return mapData({
+        type: DATA_MAPPING_TYPES.PATIENT,
+        source: allPatientData,
       }).find((patient) => {
         return patient.id === args.id;
       });
     },
 
-    getClinic: async (_, args: { id: string }) => {
+    getClinic: async (_: never, args: { id: string }) => {
       const clinic = await getCSVData<ClinicTypeSource>("clinics.csv");
 
       return mapData({
