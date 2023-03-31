@@ -49,13 +49,22 @@ export const resolvers = {
     },
 
     getClinic: async (_: never, args: { id: string }) => {
-      const clinic = await getCSVData<ClinicTypeSource>("clinics.csv");
+      const clinics = await getCSVData<ClinicTypeSource>("clinics.csv");
 
       return mapData({
         type: DATA_MAPPING_TYPES.CLINIC,
-        source: clinic.content,
+        source: clinics.content,
       }).find((clinic) => {
         return clinic.id === args.id;
+      });
+    },
+
+    getClinics: async () => {
+      const clinics = await getCSVData<ClinicTypeSource>("clinics.csv");
+
+      return mapData({
+        type: DATA_MAPPING_TYPES.CLINIC,
+        source: clinics.content,
       });
     },
   },
